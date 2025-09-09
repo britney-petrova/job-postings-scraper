@@ -29,16 +29,12 @@ def main():
 
     # convert the scraped list of dictionaries into a Pandas DataFrame
     df = pd.DataFrame(jobs)
-
     # generate a date string (YYYY-MM-DD) for the filename
     today = datetime.date.today().isoformat()
-
     # ensure the 'data' directory exists (create if necessary)
     os.makedirs("data", exist_ok=True)
-
     # build the output filepath with today's date
     filepath = f"data/jobs_{today}.csv"
-
     # save DataFrame as a CSV file without the index column
     df.to_csv(filepath, index=False)
 

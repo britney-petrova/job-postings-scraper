@@ -34,32 +34,25 @@ def scrape_category(category_url):
     # parse the HTML response with BeautifulSoup
     soup = BeautifulSoup(response.text, "html.parser")
 
+    # find all job postings directly
+    listings = soup.select("li.feature a[href^='/remote-jobs/']")
+
     # create a list that will contain the filtered jobs
     jobs = []
 
-    # each section with class "jobs" contains job listings
-    sections = soup.find_all("section", class_="jobs")
+    # loop through all <a> tags inside <li class="feature"> elements
+    # that link to individual remote job postings
+    for anchor in soup.select("li.feature a[href^='/remote-jobs/']"):
+        # extract the company name if present
+        company = anchor.find("span", class_="company")
+        # extract the job title if present
+        title = anchor.find("span", class_="title")
 
-    for section in sections:
-        # job postings are inside <li> tags with class "feature"
-        listings = section.find_all("li", class_="feature")
-
-        for job in listings:
-            anchor = job.find("a", href=True)
-            if not anchor:
-                continue  # skip if no link found (malformed listing)
-
-            # extract company name, job title, and job link
-            company = job.find("span", class_="company")
-            title = job.find("span", class_="title")
-            link = BASE_URL + anchor["href"]
-
-            # add job to the list of filtered jobs
-            jobs.append({
-                # return "N/A" if company or job title is missing
-                "title": title.text.strip() if title else "N/A",
-                "company": company.text.strip() if company else "N/A",
-                "link": link
-            })
+        # append the job posting to the jobs list as a dictionary
+        jobs.append({
+            "title": title.text.strip() if title else "N/A",  # job title (fallback "N/A")
+            "company": company.text.strip() if company else "N/A",  # company name (fallback "N/A")
+            "link": BASE_URL + anchor["href"]  # job posting URL
+        })
 
     return jobs
