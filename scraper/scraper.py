@@ -40,18 +40,22 @@ def scrape_category(category_url):
     # create a list that will contain the filtered jobs
     jobs = []
 
-    # loop through all <a> tags inside <li class="feature"> elements
-    # that link to individual remote job postings
-    for anchor in soup.select("li.feature a[href^='/remote-jobs/']"):
-        # extract the company name if present
-        company = anchor.find("span", class_="company")
-        # extract the job title if present
-        title = anchor.find("span", class_="title")
+    # iterate over all <a> elements inside <li> tags that link to job postings
+    # CSS selector matches <a> tags whose href begins with "/remote-jobs/"
+    for anchor in soup.select("li a[href^='/remote-jobs/']"):
+        # return to the parent <li> element that contains the job posting
+        li = anchor.find_parent("li")
 
-        # append the job posting to the jobs list as a dictionary
+        # extract the job title (inside <span class="title">) if present
+        title = li.select_one("span.title")
+
+        # extract the company name (inside <span class="company">) if present
+        company = li.select_one("span.company")
+
+        # append the job posting as a dictionary to the jobs list
         jobs.append({
-            "title": title.text.strip() if title else "N/A",  # job title (fallback "N/A")
-            "company": company.text.strip() if company else "N/A",  # company name (fallback "N/A")
+            "title": title.get_text(strip=True) if title else "N/A",  # job title text (fallback "N/A")
+            "company": company.get_text(strip=True) if company else "N/A",  # company name text (fallback "N/A")
             "link": BASE_URL + anchor["href"]  # job posting URL
         })
 
