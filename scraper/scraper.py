@@ -34,29 +34,33 @@ def scrape_category(category_url):
     # parse the HTML response with BeautifulSoup
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # find all job postings directly
-    listings = soup.select("li.feature a[href^='/remote-jobs/']")
-
-    # create a list that will contain the filtered jobs
+    # empty list to hold all scraped job postings
     jobs = []
 
-    # iterate over all <a> elements inside <li> tags that link to job postings
-    # CSS selector matches <a> tags whose href begins with "/remote-jobs/"
-    for anchor in soup.select("li a[href^='/remote-jobs/']"):
-        # return to the parent <li> element that contains the job posting
-        li = anchor.find_parent("li")
+    # job listings are grouped inside <section class="jobs">
+    # each job is represented as an <li> element (with or without the "feature" class)
+    listings = soup.select("section.jobs li")
 
-        # extract the job title (inside <span class="title">) if present
-        title = li.select_one("span.title")
+    # iterate through every <li> job listing
+    for li in listings:
+        # find the job posting link (<a>) whose href begins with "/remote-jobs/"
+        anchor = li.select_one("a[href^='/remote-jobs/']")
 
-        # extract the company name (inside <span class="company">) if present
-        company = li.select_one("span.company")
+        # if no link is found, skip this <li> (malformed or non-job element)
+        if not anchor:
+            continue
 
-        # append the job posting as a dictionary to the jobs list
+        # extract the job title (if available) inside <span class="title">
+        title = anchor.select_one("span.title")
+
+        # extract the company name (if available) inside <span class="company">
+        company = anchor.select_one("span.company")
+
+        # append the structured job data to the jobs list
         jobs.append({
-            "title": title.get_text(strip=True) if title else "N/A",  # job title text (fallback "N/A")
-            "company": company.get_text(strip=True) if company else "N/A",  # company name text (fallback "N/A")
-            "link": BASE_URL + anchor["href"]  # job posting URL
+            "title": title.get_text(strip=True) if title else "N/A",  # job title text, fallback "N/A"
+            "company": company.get_text(strip=True) if company else "N/A",  # company name text, fallback "N/A"
+            "link": BASE_URL + anchor["href"].split("?")[0]  # absolute job URL, strip off tracking params
         })
 
     return jobs
