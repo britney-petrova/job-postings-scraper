@@ -2,13 +2,14 @@
 from scraper.scraper import scrape_category
 # the target category URL from config file
 from scraper.config import CATEGORY_URL
-
-# pd to work with tabular job data
+# to work with tabular job data
 import pandas as pd
-# datetime to generate date-stamped filenames
+# to generate date-stamped filenames
 import datetime
-# os for filesystem operations
+# for filesystem operations
 import os
+# import the emailer function
+from emailer import send_job_email
 
 
 def main():
@@ -16,6 +17,7 @@ def main():
     Main entry point of the script:
     - Scrapes job postings from the target We Work Remotely category
     - Saves the results as a date-stamped CSV file in the 'data' directory
+    - Emails the results to the configured recipient
     """
     print("Scraping We Work Remotely (Full-Stack category)...")
 
@@ -45,8 +47,11 @@ def main():
     # log success message with the number of jobs saved
     print(f"Saved {len(df)} jobs to {filepath}")
 
+    # send the email after saving
+    send_job_email()
+
 
 # run main() only if this script is executed directly (not imported as a module)
 if __name__ == "__main__":
     main()
-    
+

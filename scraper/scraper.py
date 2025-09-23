@@ -1,8 +1,8 @@
-# requests to send HTTP requests
+# to send HTTP requests
 import requests
-# bs4 to pull data from HTML and XML files
+# to pull data from HTML and XML files
 from bs4 import BeautifulSoup
-# regex for cleaning up URL slugs
+# for cleaning up URL slugs
 import re
 
 # HTTP request headers to mimic a real browser and avoid being blocked
