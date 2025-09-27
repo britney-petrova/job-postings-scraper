@@ -1,26 +1,31 @@
-# Job Postings Scraper
+# 👩‍💻 Job Postings Scraper
 
-Tired of searching for jobs manually? This scraper helps automate the process by gathering and filtering listings so you can stay focused on applying.
-
-## 🔍 Features
-
-- Scrapes job titles, company names, and links from remote job sites
-- Filters job postings by custom keywords (e.g. "python", "entry-level", "intern")
-- Saves daily results to a `.csv` file
-- Emails the job list to you every day
-
-## 🚧 Status
-
-This project is a **work in progress** — features and structure may change as it's being built.
-
-## 📌 Goals
-
-- [ ] Support multiple remote job boards
-- [ ] User-defined keyword filters
-- [ ] Daily CSV export with timestamped filenames
-- [ ] Automated email delivery of job lists
-- [ ] Scheduled (cron or similar) daily runs
+Tired of searching for jobs manually? This scraper automates the process by gathering IT job listings from We Work Remotely, filtering them by the full-stack category, saving them to a CSV, and delivering the results straight to your inbox at 9:00 every Friday.
 
 ---
 
-Stay tuned for updates!
+## 🔍 Features
+
+- Scrapes job titles and links from We Work Remotely
+- Filters postings by the full-stack category
+- Saves results to timestamped `.csv` files for easy tracking
+- Sends job lists via email on a weekly schedule
+- Flexible scheduling using `schedule` (Python) or system tools (cron, Task Scheduler)
+
+---
+
+## 📂 Project Structure
+
+- **`main.py`** → Orchestrates the whole workflow (scrape → filter → save → email)  
+- **`scraper.py`** → Fetches job postings from WWR and applies category filter 
+- **`emailer.py`** → Handles SMTP setup and sends out the CSV file with job listings  
+- **`scheduler.py`** → Automates the job run on a weekly basis  
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+   ```bash
+   git clone https://github.com/britney-petrova/job-postings-scraper.git
+   cd job-postings-scraper
